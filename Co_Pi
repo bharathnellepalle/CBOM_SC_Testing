@@ -1,0 +1,72 @@
+### Setup CBOMkit (concise steps we followed)
+
+#### 1. Install prerequisites
+- **Docker Desktop** (WSL2 enabled) — start Docker until it shows *Docker is running*.  
+- **Git for Windows** — install with default options.
+
+#### 2. Clone repository
+```powershell
+cd C:\Users\smili\OneDrive\Documents
+git clone https://github.com/cbomkit/cbomkit
+cd cbomkit
+```
+
+#### 3. Create `.env` (repo root)
+Create a file named `.env` with:
+```
+POSTGRESQL_AUTH_USERNAME=cbomkit
+POSTGRESQL_AUTH_PASSWORD=cbomkit
+CBOMKIT_VERSION=latest
+CBOMKIT_VIEWER=coeus
+```
+
+#### 4. Authenticate to GitHub Container Registry
+- Create a GitHub Personal Access Token (classic) with **read:packages** scope.  
+- In PowerShell:
+```powershell
+docker logout ghcr.io
+docker login ghcr.io
+# enter GitHub username and the PAT when prompted
+```
+
+#### 5. Start CBOMkit (prod profile)
+```powershell
+docker-compose --profile prod up
+```
+- This pulls frontend/backend from `ghcr.io` and starts Postgres.
+
+#### 6. Verify containers
+```powershell
+docker ps
+```
+Expected containers and ports:
+- **cbomkit-backend** → `8081`  
+- **cbomkit-frontend** → `8001` (browser)  
+- **postgres** → `5432`
+
+#### 7. Open the UI
+Open in browser:
+```
+http://localhost:8001
+```
+
+#### 8. Useful commands
+- Run detached:
+```powershell
+docker-compose --profile prod up -d
+```
+- Stop and remove:
+```powershell
+docker-compose --profile prod down
+```
+- View logs:
+```powershell
+docker-compose --profile prod logs -f
+```
+
+#### Notes
+- The compose file uses **profiles**; `--profile prod` starts backend, frontend, and db.  
+- Named volumes (`pg-volume`, `cbomkit-volume`) are defined in the compose file so data persists across restarts.  
+- If you prefer not to pull images, you can build locally from `backend/Dockerfile` and `frontend/Dockerfile` and keep `CBOMKIT_VERSION=latest` in `.env`.
+
+If you want, I can convert these steps into a single PowerShell script you can run end‑to‑end.
