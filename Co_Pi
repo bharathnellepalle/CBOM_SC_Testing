@@ -68,5 +68,3 @@ docker-compose --profile prod logs -f
 - The compose file uses **profiles**; `--profile prod` starts backend, frontend, and db.  
 - Named volumes (`pg-volume`, `cbomkit-volume`) are defined in the compose file so data persists across restarts.  
 - If you prefer not to pull images, you can build locally from `backend/Dockerfile` and `frontend/Dockerfile` and keep `CBOMKIT_VERSION=latest` in `.env`.
-
-If you want, I can convert these steps into a single PowerShell script you can run end‑to‑end.
